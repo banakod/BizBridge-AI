@@ -31,68 +31,95 @@ const registerUser = async (req, res) => {
   role,
 });
 
-await sendEmail({
-  to: user.email,
-  subject: "🎉 Welcome to BizBridge AI",
-  html: `
+let subject = "";
+let html = "";
+
+if (role === "freelancer") {
+  subject = "🎉 Welcome to BizBridge AI - Start Growing Your Freelance Career";
+
+  html = `
   <div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;background:#f8fafc;padding:40px">
 
     <div style="background:#4f46e5;padding:25px;border-radius:12px;text-align:center;color:white;">
-      <h1 style="margin:0;">🎉 Welcome to BizBridge AI</h1>
-      <p style="margin-top:10px;">
-        Your account has been created successfully.
-      </p>
+      <h1>💼 Welcome, Freelancer!</h1>
+      <p>Your BizBridge AI account is ready.</p>
     </div>
 
     <div style="background:white;padding:30px;border-radius:12px;margin-top:20px;">
 
       <h2>Hello ${user.name}, 👋</h2>
 
-      <p>
-        Thank you for joining <b>BizBridge AI</b>.
-      </p>
+      <p>Welcome to <b>BizBridge AI</b>.</p>
 
-      <p>
-        Your account is now ready.
-      </p>
-
-      <h3>You can now:</h3>
+      <p>You can now:</p>
 
       <ul>
         <li>🏢 Discover Local Businesses</li>
         <li>🤖 Generate AI Proposals</li>
-        <li>📧 Create Outreach Emails</li>
-        <li>🌐 Generate Website Previews</li>
-        <li>📊 Manage Your CRM Pipeline</li>
+        <li>📧 Generate Cold Emails</li>
+        <li>🌐 Create Website Previews</li>
+        <li>📊 Manage Your Lead Pipeline</li>
       </ul>
 
-      <div style="text-align:center;margin-top:35px;">
-
+      <div style="text-align:center;margin-top:30px;">
         <a
           href="${process.env.CLIENT_URL}/login"
-          style="
-            background:#4f46e5;
-            color:white;
-            padding:14px 24px;
-            border-radius:8px;
-            text-decoration:none;
-            font-weight:bold;
-            display:inline-block;
-          "
+          style="background:#4f46e5;color:white;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;"
         >
-          Login to BizBridge AI
+          Login as Freelancer
         </a>
-
       </div>
 
     </div>
 
-    <p style="margin-top:25px;font-size:13px;color:#64748b;text-align:center;">
-      Thank you for choosing BizBridge AI ❤️
-    </p>
+  </div>
+  `;
+} else {
+  subject = "🏢 Welcome to BizBridge AI - Grow Your Business";
+
+  html = `
+  <div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;background:#f8fafc;padding:40px">
+
+    <div style="background:#059669;padding:25px;border-radius:12px;text-align:center;color:white;">
+      <h1>🏢 Welcome, Business Owner!</h1>
+      <p>Your business account has been created successfully.</p>
+    </div>
+
+    <div style="background:white;padding:30px;border-radius:12px;margin-top:20px;">
+
+      <h2>Hello ${user.name}, 👋</h2>
+
+      <p>Welcome to <b>BizBridge AI</b>.</p>
+
+      <p>You can now:</p>
+
+      <ul>
+        <li>🏢 Register and manage your business</li>
+        <li>🤝 Receive connection requests from freelancers</li>
+        <li>👨‍💻 Discover talented professionals</li>
+        <li>📈 Expand your digital presence</li>
+        <li>🚀 Collaborate to grow your business</li>
+      </ul>
+      
+      <div style="text-align:center;margin-top:30px;">
+        <a
+          href="${process.env.CLIENT_URL}/login"
+          style="background:#059669;color:white;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;"
+        >
+          Login as Business Owner
+        </a>
+      </div>
+
+    </div>
 
   </div>
-  `,
+  `;
+}
+
+await sendEmail({
+  to: user.email,
+  subject,
+  html,
 });
 
     // Generate JWT
