@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 const statusConfig = {
@@ -21,7 +22,7 @@ function MyLeads() {
       setLeads(response.data.leads);
     } catch (error) {
       console.log(error);
-      alert("Failed to load leads");
+      toast.error("Failed to load leads");
     }
   }, []);
 
@@ -59,9 +60,12 @@ function MyLeads() {
               <h1 className="text-lg font-black text-slate-900">My Leads</h1>
             </div>
           </div>
-          <button onClick={() => navigate("/businesses")} className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-600 transition hover:bg-indigo-100">
-            + Add Lead
-          </button>
+          <button
+  onClick={() => navigate("/dashboard")}
+  className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-600 transition hover:bg-indigo-100"
+>
+  🏠 Dashboard
+</button>
         </div>
       </header>
 

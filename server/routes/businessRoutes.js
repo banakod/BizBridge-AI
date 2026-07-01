@@ -1,25 +1,45 @@
 const express = require("express");
 const router = express.Router();
+
 const { protect, requireRole } = require("../middleware/authMiddleware");
+
 const {
-  createBusiness, getBusinesses, searchBusinesses,
-  getBusinessesWithoutWebsite, getBusinessById,
-  updateBusiness, deleteBusiness,
-  getMyBusiness, requestHelp, discoverBusinesses,
+  createBusiness,
+  getBusinesses,
+  searchBusinesses,
+  getBusinessesWithoutWebsite,
+  getBusinessById,
+  updateBusiness,
+  deleteBusiness,
+  getMyBusiness,
+  requestHelp,
+  discoverBusinesses,
 } = require("../controllers/businessController");
 
-router.post("/",            protect, createBusiness);
-router.get("/",             getBusinesses);
-router.get("/search",       searchBusinesses);
-router.get("/no-website",   getBusinessesWithoutWebsite);
-router.get("/discover",     protect, discoverBusinesses);
+// Public
+router.get("/", getBusinesses);
+router.get("/search", searchBusinesses);
+router.get("/no-website", getBusinessesWithoutWebsite);
 
-// Business owner routes
-router.get("/my-business",     protect, requireRole("businessOwner"), getMyBusiness);
-router.post("/request-help",   protect, requireRole("businessOwner"), requestHelp);
+// Freelancer
+router.get("/discover", protect, discoverBusinesses);
 
-router.get("/:id",          getBusinessById);
-router.put("/:id",          protect, updateBusiness);
-router.delete("/:id",       protect, deleteBusiness);
+// Business Owner
+router.get("/my-business", protect, requireRole("businessOwner"), getMyBusiness);
+
+router.post(
+  "/request-help",
+  protect,
+  requireRole("businessOwner"),
+  requestHelp
+);
+
+router.post("/", protect, requireRole("businessOwner"), createBusiness);
+
+// IMPORTANT
+router.get("/:id", getBusinessById);
+
+router.put("/:id", protect, updateBusiness);
+router.delete("/:id", protect, deleteBusiness);
 
 module.exports = router;

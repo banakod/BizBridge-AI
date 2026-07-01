@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function BusinessCard({ business, deleteBusiness }) {
+function BusinessCard({ business}) {
   const navigate = useNavigate();
   const location = [business.area, business.city, business.pincode].filter(Boolean).join(", ");
   const score = business.leadScore ?? 0;
@@ -28,7 +28,7 @@ function BusinessCard({ business, deleteBusiness }) {
         </div>
         <div className={`shrink-0 rounded-xl px-3 py-2 text-center text-white shadow-lg ${scoreBg}`}>
           <p className="text-xl font-black leading-none">{score}</p>
-          <p className="text-[9px] font-bold uppercase tracking-wider opacity-90">Score</p>
+         <p className="text-[10px] font-bold uppercase tracking-wider opacity-90">Opportunity</p>
         </div>
       </div>
 
@@ -39,18 +39,9 @@ function BusinessCard({ business, deleteBusiness }) {
           <span className={`relative inline-flex h-2 w-2 rounded-full ${business.websiteStatus ? "bg-emerald-500" : "bg-red-500"}`} />
         </span>
         <p className={`text-sm font-semibold ${business.websiteStatus ? "text-emerald-600" : "text-red-500"}`}>
-          Website {business.websiteStatus ? "Available" : "Not Available"}
+          Website {business.websiteStatus ? "Digital Status • Website Available" : "Digital Status • No Website"}
         </p>
       </div>
-
-      <p className="mt-1.5 text-xs text-slate-400">{business.leadPotential || "Lead potential pending"}</p>
-      <p className="mt-0.5 text-xs font-semibold text-indigo-400">✦ {business.recommendedWebsiteType || "Business Website"}</p>
-
-      {business.needsDigitalHelp && (
-        <span className="mt-2 inline-block w-fit rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-600">
-          🙋 Looking for Digital Help
-        </span>
-      )}
 
       {/* Actions */}
       <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
@@ -58,27 +49,14 @@ function BusinessCard({ business, deleteBusiness }) {
         <button
           onClick={() => navigate(`/businesses/${business._id}`)}
           className="rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-600 transition hover:bg-indigo-100"
-        >View</button>
+        >View Details</button>
 
         <button
           onClick={() => navigate(`/businesses/${business._id}/add-lead`)}
-          className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-600 transition hover:bg-emerald-100"
-        >Add Lead</button>
+          className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-600 transition hover:bg-emerald-100">
+          Save to Pipeline
+        </button>
 
-        {/* 🔴 CHANGED: Edit & Delete only visible to the user who created this business */}
-        {isCreator && (
-          <>
-            <button
-              onClick={() => navigate(`/businesses/edit/${business._id}`)}
-              className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-600 transition hover:bg-amber-100"
-            >Edit</button>
-
-            <button
-              onClick={() => deleteBusiness(business._id)}
-              className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-500 transition hover:bg-red-100"
-            >Delete</button>
-          </>
-        )}
       </div>
     </div>
   );

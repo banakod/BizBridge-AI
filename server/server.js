@@ -9,6 +9,9 @@ const businessRoutes = require("./routes/businessRoutes");
 const leadRoutes = require("./routes/leadRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+const requestRoutes = require("./routes/requestRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -22,6 +25,9 @@ app.use("/api/leads", leadRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/ai", aiRoutes);
 
+app.use("/api/profile", profileRoutes);
+app.use("/api/requests", requestRoutes);
+app.use("/api/notifications", notificationRoutes);
 // Test Route
 app.get("/", (req, res) => {
   res.send("BizBridge AI Backend Running...");

@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+ const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [showPassword, setShowPassword] = useState(false);
+const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -15,11 +18,15 @@ function Login() {
       const response = await api.post("/users/login", { email, password });
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      const role = response.data.user?.role;
-      navigate(role === "businessOwner" ? "/owner-dashboard" : "/dashboard");
+      const role = response.data.user.role;
+      if (role === "businessOwner") {
+        navigate("/my-business");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "Login Failed");
+      toast.error(error.response?.data?.message || "Login Failed");
     } finally {
       setLoading(false);
     }
@@ -70,8 +77,28 @@ function Login() {
             </label>
             <label className="mt-5 block">
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Password</span>
-              <input type="password" placeholder="Your password" className="input-dark" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <div className="relative">
+                <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Your password"
+                className="input-dark pr-12"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                />
+               <button
+                type="button" onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-600">
+                {showPassword ? <FiEyeOff size={15} /> : <FiEye size={15} />}
+               </button>
+             </div>
             </label>
+            <div className="flex justify-end">
+              <button type="button" onClick={() => navigate("/forgot-password")}
+               className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+               Forgot Password?
+              </button>
+            </div>
             <button type="submit" disabled={loading} className="btn-primary mt-6 w-full py-3 text-sm">
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

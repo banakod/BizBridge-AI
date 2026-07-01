@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 const statusOptions = [
@@ -24,7 +25,7 @@ function AddLead() {
       navigate("/leads");
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "Failed to create lead");
+      toast.error(error.response?.data?.message || "Failed to create lead");
     }
   };
 

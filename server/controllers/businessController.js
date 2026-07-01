@@ -1,4 +1,5 @@
 const Business = require("../models/Business");
+const mongoose = require("mongoose");
 
 const CATEGORY_WEBSITE_TYPES = {
   restaurant: "Restaurant Website", hotel: "Hotel Booking Website",
@@ -129,11 +130,36 @@ const getBusinessesWithoutWebsite = async (req, res) => {
 
 const getBusinessById = async (req, res) => {
   try {
+
+    // Prevent invalid ObjectId crash
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Business ID",
+      });
+    }
+
     const business = await Business.findById(req.params.id);
-    if (!business) return res.status(404).json({ message: "Business not found" });
-    res.status(200).json({ success: true, business: enrichBusiness(business) });
+
+    if (!business) {
+      return res.status(404).json({
+        success: false,
+        message: "Business not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      business: enrichBusiness(business),
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 };
 
@@ -148,11 +174,25 @@ const updateBusiness = async (req, res) => {
     const isAdmin   = req.user.role === "admin";
     if (!isCreator && !isAdmin) return res.status(401).json({ message: "Not authorized" });
 
-    const updated = await Business.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json({ success: true, business: enrichBusiness(updated) });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+   const updated = await Business.findByIdAndUpdate(
+  req.params.id,
+  req.body,
+  {
+    returnDocument: "after",
+    runValidators: true,
   }
+);
+
+res.status(200).json({
+  success: true,
+  business: enrichBusiness(updated),
+});
+
+} catch (error) {
+  res.status(500).json({
+    message: error.message,
+  });
+}
 };
 
 const deleteBusiness = async (req, res) => {
@@ -176,11 +216,18 @@ const deleteBusiness = async (req, res) => {
 
 const getMyBusiness = async (req, res) => {
   try {
-    const business = await Business.findOne({ createdBy: req.user._id });
-    if (!business) return res.status(404).json({ message: "No business found" });
-    res.status(200).json({ success: true, business: enrichBusiness(business) });
+    const business = await Business.findOne({
+      createdBy: req.user.id,
+    });
+
+    res.status(200).json({
+      success: true,
+      business,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
@@ -286,8 +333,18 @@ node["leisure"="${osmTag}"](around:${radius},${lat},${lng});
 };
 
 module.exports = {
-  createBusiness, getBusinesses, searchBusinesses,
-  getBusinessesWithoutWebsite, getBusinessById,
-  updateBusiness, deleteBusiness,
-  getMyBusiness, requestHelp, discoverBusinesses,
+  createBusiness,
+  getBusinesses,
+  searchBusinesses,
+  getBusinessesWithoutWebsite,
+  getBusinessById,
+  updateBusiness,
+  deleteBusiness,
+
+  // Business Owner
+  getMyBusiness,
+  requestHelp,
+
+  // Discovery
+  discoverBusinesses,
 };

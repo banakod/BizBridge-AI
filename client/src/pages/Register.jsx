@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 const roles = [
@@ -7,7 +9,7 @@ const roles = [
     value: "freelancer",
     icon: "💼",
     title: "I'm a Freelancer",
-    desc: "Find local businesses with no website. Pitch them, generate proposals with AI, and grow your income.",
+    desc: "Discover businesses, build your professional profile, connect with business owners, and grow your freelance career.",
     border: "border-indigo-200",
     activeBg: "border-indigo-500 bg-indigo-50 shadow-sm",
     inactiveBg: "border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50/50",
@@ -18,7 +20,7 @@ const roles = [
     value: "businessOwner",
     icon: "🏢",
     title: "I Own a Business",
-    desc: "List your business in the directory. Freelancers will find you and offer websites, SEO, and digital help.",
+    desc: "Register your business, receive connection requests from professionals, review profiles, and collaborate to grow your business.",
     border: "border-emerald-200",
     activeBg: "border-emerald-500 bg-emerald-50 shadow-sm",
     inactiveBg: "border-slate-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/50",
@@ -32,23 +34,34 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("freelancer");
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await api.post("/users/register", { ...formData, role });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      navigate(role === "businessOwner" ? "/owner-dashboard" : "/dashboard");
-    } catch (error) {
-      alert(error.response?.data?.message || "Registration Failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+
+  setLoading(true);
+
+  try {
+    await api.post("/users/register", {
+  ...formData,
+  role,
+});
+
+    toast.success("🎉 Registration successful! A welcome email has been sent to your email address.");
+    setTimeout(() => {
+      navigate("/login");
+    }, 2000);
+
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Registration Failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+ };
 
   const selected = roles.find((r) => r.value === role);
 
@@ -66,10 +79,15 @@ function Register() {
           </div>
 
           <p className="text-xs font-bold uppercase tracking-widest text-indigo-500">Create Account</p>
-          <h1 className="mt-1 text-3xl font-black text-slate-900">Join BizBridge AI</h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Already have an account?{" "}
-            <button type="button" onClick={() => navigate("/login")} className="font-bold text-indigo-600 hover:text-indigo-800">Login</button>
+          <h1 className="mt-1 text-3xl font-black text-slate-900">Start Your Journey with BizBridge AI</h1>
+          <p className="mt-2 text-sm text-slate-500"> Create your account in less than a minute.</p>
+          <p className="mt-2 text-sm text-slate-500">Already have an account?{" "}
+            <button
+             type="button"
+             onClick={() => navigate("/login")}
+             className="font-bold text-indigo-600 hover:text-indigo-800">
+              Login
+            </button>
           </p>
 
           {/* ── Role picker ── */}
@@ -104,7 +122,21 @@ function Register() {
             </label>
             <label className="mt-4 block">
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Password</span>
-              <input type="password" name="password" placeholder="Create a strong password" value={formData.password} onChange={handleChange} className="input-dark" required />
+              <div className="relative">
+                <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Create Password"
+                className="input-dark pr-12"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                />
+                <button
+                type="button" onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-600" >{showPassword ? <FiEyeOff size={15} /> : <FiEye size={15} />}
+                </button>
+              </div>
             </label>
 
             <button
@@ -118,7 +150,7 @@ function Register() {
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                   Creating account...
                 </span>
-              ) : "Create Account →"}
+              ) : "Create My Account →"}
             </button>
           </form>
 
@@ -134,18 +166,39 @@ function Register() {
 
         <div>
           <div className="mb-5 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold">
-            ✦ Two sides, one platform
+            ✦ AI-Powered Business Networking
           </div>
-          <h2 className="max-w-md text-4xl font-black leading-tight">Built for both sides of the deal.</h2>
+          <h2 className="max-w-md text-4xl font-black leading-tight">Connect.
+            Collaborate.
+            Grow Together.</h2>
           <p className="mt-4 max-w-sm text-base leading-8 text-indigo-100">Freelancers earn by helping businesses grow online. Business owners get discovered and get help.</p>
 
           <div className="mt-8 space-y-3">
-            {[
-              { icon: "💼", title: "Freelancers", desc: "Discover leads, pitch them, generate AI proposals, close deals" },
-              { icon: "🏢", title: "Business Owners", desc: "List your business, get found, receive digital help offers" },
-              { icon: "🤖", title: "AI Powered", desc: "Auto proposals, pitch scripts, live website previews" },
-              { icon: "🗺",  title: "Map Discovery", desc: "Find businesses near you on a live OpenStreetMap" },
-            ].map((s) => (
+            {[{
+              icon: "🤝",
+              title: "Smart Connections",
+              desc: "Connect professionals with business owners",
+            },
+            {
+              icon: "📈",
+              title: "Business Opportunities",
+              desc: "Discover new clients and growth opportunities",
+            },
+            {
+              icon: "👤",
+              title: "Professional Profiles",
+              desc: "Showcase your skills, experience and portfolio",
+            },
+            {
+              icon: "🤖",
+              title: "AI Assistance",
+              desc: "Generate proposals, recommendations and business insights",
+            },
+            {
+              icon: "🚀",
+              title: "Business Growth",
+              desc: "Turn opportunities into successful collaborations",
+            },].map((s) => (
               <div key={s.title} className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/10 p-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xl">{s.icon}</div>
                 <div>
@@ -157,7 +210,7 @@ function Register() {
           </div>
         </div>
 
-        <p className="text-xs text-indigo-300">Built for freelancers, developers & business owners.</p>
+        <p className="text-xs text-indigo-300">Connecting Professionals with Businesses.</p>
       </section>
 
     </div>

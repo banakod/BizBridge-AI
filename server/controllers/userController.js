@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 const registerUser = async (req, res) => {
   try {
@@ -23,11 +25,75 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-    });
+  name,
+  email,
+  password: hashedPassword,
+  role,
+});
+
+await sendEmail({
+  to: user.email,
+  subject: "🎉 Welcome to BizBridge AI",
+  html: `
+  <div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;background:#f8fafc;padding:40px">
+
+    <div style="background:#4f46e5;padding:25px;border-radius:12px;text-align:center;color:white;">
+      <h1 style="margin:0;">🎉 Welcome to BizBridge AI</h1>
+      <p style="margin-top:10px;">
+        Your account has been created successfully.
+      </p>
+    </div>
+
+    <div style="background:white;padding:30px;border-radius:12px;margin-top:20px;">
+
+      <h2>Hello ${user.name}, 👋</h2>
+
+      <p>
+        Thank you for joining <b>BizBridge AI</b>.
+      </p>
+
+      <p>
+        Your account is now ready.
+      </p>
+
+      <h3>You can now:</h3>
+
+      <ul>
+        <li>🏢 Discover Local Businesses</li>
+        <li>🤖 Generate AI Proposals</li>
+        <li>📧 Create Outreach Emails</li>
+        <li>🌐 Generate Website Previews</li>
+        <li>📊 Manage Your CRM Pipeline</li>
+      </ul>
+
+      <div style="text-align:center;margin-top:35px;">
+
+        <a
+          href="${process.env.CLIENT_URL}/login"
+          style="
+            background:#4f46e5;
+            color:white;
+            padding:14px 24px;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:bold;
+            display:inline-block;
+          "
+        >
+          Login to BizBridge AI
+        </a>
+
+      </div>
+
+    </div>
+
+    <p style="margin-top:25px;font-size:13px;color:#64748b;text-align:center;">
+      Thank you for choosing BizBridge AI ❤️
+    </p>
+
+  </div>
+  `,
+});
 
     // Generate JWT
     const token = jwt.sign(
@@ -117,6 +183,72 @@ const loginUser = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Generate secure token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    await user.save();
+
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "BizBridge AI - Password Reset",
+      html: `
+        <h2>Password Reset</h2>
+
+        <p>Hello ${user.name},</p>
+
+        <p>Click the button below to reset your password.</p>
+
+        <a href="${resetUrl}"
+           style="
+             background:#4f46e5;
+             color:white;
+             padding:12px 20px;
+             text-decoration:none;
+             border-radius:6px;
+           ">
+          Reset Password
+        </a>
+
+        <p>This link expires in 10 minutes.</p>
+      `,
+    });
+
+    res.json({
+      message: "Password reset email sent successfully.",
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
 const getProfile = async (req, res) => {
   try {
     res.status(200).json({
@@ -130,8 +262,148 @@ const getProfile = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password and new password are required.",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password is incorrect.",
+      });
+    }
+
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be different from the current password.",
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password changed successfully.",
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({
+        message: "Password is required",
+      });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or expired reset token",
+      });
+    }
+
+    const bcrypt = require("bcryptjs");
+
+    user.password = await bcrypt.hash(password, 10);
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.json({
+      message: "Password updated successfully.",
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const user = await User.findOne({
+      verificationToken: token,
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid verification link.",
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully.",
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  forgotPassword,
+  resetPassword,
   getProfile,
+  changePassword,
 };

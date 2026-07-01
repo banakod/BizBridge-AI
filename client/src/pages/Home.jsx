@@ -2,26 +2,86 @@ import { useNavigate } from "react-router-dom";
 
 // 🔴 CHANGED: removed "Business Claims" — replaced with "Business Directory" which is accurate
 const features = [
-  { icon: "🗺", title: "Map Discovery", desc: "Auto-find local businesses via OpenStreetMap. No API key needed.", color: "border-indigo-200 bg-indigo-50", iconBg: "bg-indigo-100" },
-  { icon: "🤖", title: "AI Proposals", desc: "Generate proposals, outreach emails, and sales pitches in seconds.", color: "border-purple-200 bg-purple-50", iconBg: "bg-purple-100" },
-  { icon: "📊", title: "Lead Scoring", desc: "AI scores every business based on digital gap & opportunity size.", color: "border-pink-200 bg-pink-50", iconBg: "bg-pink-100" },
-  { icon: "🌐", title: "Website Preview", desc: "Show clients a live dummy of their future website to close deals.", color: "border-sky-200 bg-sky-50", iconBg: "bg-sky-100" },
-  { icon: "🏢", title: "Business Directory", desc: "Business owners list their business so freelancers can find and help them.", color: "border-emerald-200 bg-emerald-50", iconBg: "bg-emerald-100" },
-  { icon: "🎯", title: "CRM Pipeline", desc: "Track every lead from New → Contacted → Won with one click.", color: "border-amber-200 bg-amber-50", iconBg: "bg-amber-100" },
+  {
+    icon: "🏢",
+    title: "Business Discovery",
+    desc: "Explore local businesses looking for digital services and growth opportunities.",
+    color: "border-indigo-200 bg-indigo-50",
+    iconBg: "bg-indigo-100",
+  },
+  {
+    icon: "🤖",
+    title: "AI Business Insights",
+    desc: "Understand business needs with AI-powered recommendations and analysis.",
+    color: "border-purple-200 bg-purple-50",
+    iconBg: "bg-purple-100",
+  },
+  {
+    icon: "👤",
+    title: "Professional Profiles",
+    desc: "Showcase your skills, experience and portfolio to business owners.",
+    color: "border-pink-200 bg-pink-50",
+    iconBg: "bg-pink-100",
+  },
+  {
+    icon: "🤝",
+    title: "Connection Requests",
+    desc: "Send personalized requests and connect directly with business owners.",
+    color: "border-sky-200 bg-sky-50",
+    iconBg: "bg-sky-100",
+  },
+  {
+    icon: "📊",
+    title: "Lead Management",
+    desc: "Track every opportunity from first contact to successful collaboration.",
+    color: "border-emerald-200 bg-emerald-50",
+    iconBg: "bg-emerald-100",
+  },
+  {
+    icon: "🚀",
+    title: "Business Growth",
+    desc: "Help businesses improve their digital presence and grow together.",
+    color: "border-amber-200 bg-amber-50",
+    iconBg: "bg-amber-100",
+  },
 ];
 
 const stats = [
-  { value: "2 Roles", label: "Freelancer & Business Owner" },
-  { value: "Free Map", label: "OpenStreetMap powered discovery" },
-  { value: "AI Built-in", label: "Proposals, pitches & previews" },
-  { value: "0 API Key", label: "No paid services required" },
+  { value: "AI Powered", label: "Business Discovery" },
+  { value: "2 Roles", label: "Freelancers & Business Owners" },
+  { value: "Smart", label: "Connection Requests" },
+  { value: "Secure", label: "Lead Management" },
 ];
 
 const steps = [
-  { step: "01", title: "Register as Freelancer", desc: "Create your account and access the full lead discovery dashboard.", icon: "💼" },
-  { step: "02", title: "Discover on Map", desc: "Use the live map to find restaurants, salons, clinics near you.", icon: "🗺" },
-  { step: "03", title: "Score & Analyse", desc: "AI scores every business. Focus on the highest opportunity leads.", icon: "📊" },
-  { step: "04", title: "Generate & Send", desc: "One click generates a full proposal or outreach email via AI.", icon: "🤖" },
+  {
+    icon: "🏢",
+    title: "Business Discovery",
+    desc: "Explore nearby businesses looking for digital services and new opportunities.",
+    color: "border-indigo-200 bg-indigo-50",
+    iconBg: "bg-indigo-100",
+  },
+  {
+    icon: "👤",
+    title: "Professional Profile",
+    desc: "Create your profile to showcase your skills, portfolio and experience.",
+    color: "border-purple-200 bg-purple-50",
+    iconBg: "bg-purple-100",
+  },
+  {
+    icon: "🤝",
+    title: "Connect & Collaborate",
+    desc: "Send connection requests, chat with business owners and build partnerships.",
+    color: "border-emerald-200 bg-emerald-50",
+    iconBg: "bg-emerald-100",
+  },
+  {
+    icon: "🤖",
+    title: "AI Assistance",
+    desc: "Generate proposals, business insights and recommendations with AI.",
+    color: "border-pink-200 bg-pink-50",
+    iconBg: "bg-pink-100",
+  },
 ];
 
 function Home() {
@@ -57,19 +117,19 @@ function Home() {
         <div className="relative mx-auto max-w-5xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            Now with Map Discovery & Business Owner Portal
+            AI-Powered Platform for Freelancers & Business Owners
           </div>
 
           <h1 className="text-5xl font-black leading-tight text-slate-900 sm:text-6xl lg:text-7xl">
-            Find local businesses
+           Connect Freelancers
             <br />
             <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              that need websites.
+             with Local Businesses
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-500">
-            Discover restaurants, salons, clinics & more with no online presence. Score leads with AI, generate proposals instantly, and close deals faster.
+            BizBridge AI is an AI-powered platform that connects freelancers with local businesses. Discover opportunities, showcase your professional profile, connect with business owners, and build successful collaborations.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -163,8 +223,8 @@ function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
             <p className="text-xs font-bold uppercase tracking-widest text-indigo-500">Everything you need</p>
-            <h2 className="mt-2 text-4xl font-black text-slate-900">Built for the full freelance workflow</h2>
-            <p className="mx-auto mt-4 max-w-xl text-slate-500">From discovering a lead on the map to sending a proposal — everything is in one place.</p>
+            <h2 className="mt-2 text-4xl font-black text-slate-900">Everything You Need in One Platform</h2>
+            <p className="mx-auto mt-4 max-w-xl text-slate-500">Everything required to connect freelancers and business owners through one intelligent platform.</p>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -181,42 +241,65 @@ function Home() {
         </div>
       </section>
 
-      {/* ── How it works ── */}
-      <section className="bg-white px-6 py-20">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-500">Simple process</p>
-            <h2 className="mt-2 text-4xl font-black text-slate-900">From discovery to deal — 4 steps</h2>
+      {/* ── Why BizBridge AI ── */}
+
+<section className="bg-white px-6 py-20">
+  <div className="mx-auto max-w-6xl">
+
+    <div className="mb-12 text-center">
+      <p className="text-xs font-bold uppercase tracking-widest text-indigo-500">
+        Why BizBridge AI
+      </p>
+
+      <h2 className="mt-2 text-4xl font-black text-slate-900">
+        Everything You Need to Build Business Connections
+      </h2>
+
+      <p className="mx-auto mt-4 max-w-2xl text-slate-500">
+        BizBridge AI provides everything freelancers and business owners need
+        to connect, collaborate and grow together.
+      </p>
+    </div>
+
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+      {steps.map((item) => (
+
+        <div
+          key={item.title}
+          className={`rounded-2xl border p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${item.color}`}
+        >
+
+          <div
+            className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl ${item.iconBg}`}
+          >
+            {item.icon}
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s, i) => (
-              <div key={s.step} className="relative">
-                {i < steps.length - 1 && (
-                  <div className="absolute left-full top-8 z-10 hidden h-0.5 w-full bg-gradient-to-r from-indigo-200 to-transparent lg:block" />
-                )}
-                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-lg font-black text-white shadow shadow-indigo-200">
-                      {s.step}
-                    </span>
-                    <span className="text-2xl">{s.icon}</span>
-                  </div>
-                  <h3 className="text-sm font-black text-slate-900">{s.title}</h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h3 className="text-lg font-black text-slate-900">
+            {item.title}
+          </h3>
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {item.desc}
+          </p>
+
         </div>
-      </section>
+
+      ))}
+
+    </div>
+
+  </div>
+</section>
 
       {/* ── Role cards ── */}
       <section className="bg-gradient-to-br from-indigo-50 to-purple-50 px-6 py-20">
         <div className="mx-auto max-w-4xl">
           <div className="mb-12 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-500">Two sides, one platform</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-indigo-500">Built for Everyone</p>
             <h2 className="mt-2 text-4xl font-black text-slate-900">Who is BizBridge AI for?</h2>
+            <p className="mx-auto mt-4 max-w-xl text-slate-500">A smarter way for freelancers and businesses to connect.</p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">
@@ -224,16 +307,17 @@ function Home() {
             <div className="rounded-2xl border border-indigo-200 bg-white p-8 shadow-sm">
               <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-100 text-3xl">💼</div>
               <h3 className="text-xl font-black text-slate-900">Freelancers & Developers</h3>
-              <p className="mt-2 text-sm text-slate-500 leading-relaxed">Find businesses without a strong digital presence, score them with AI, and close deals with auto-generated proposals.</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-indigo-500">FOR FREELANCERS</p>
+              <p className="mt-2 text-sm text-slate-500 leading-relaxed">Discover local businesses, showcase your professional profile, send personalized connection requests, and build long-term business relationships.</p>
               <ul className="mt-5 space-y-2">
-                {["Map discovery of local businesses","AI lead scoring & recommendations","Proposal, email & pitch generator","Live website preview for clients","Full CRM pipeline"].map((item) => (
+                {["Discover local businesses","Create your professional profile","Send personalized connection requests","Manage your lead pipeline","Grow your freelance business",].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-slate-700">
                     <span className="text-emerald-500">✓</span>{item}
                   </li>
                 ))}
               </ul>
               <button onClick={() => navigate("/register")} className="mt-6 w-full rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 py-3 text-sm font-bold text-white shadow shadow-indigo-200 transition hover:from-indigo-600 hover:to-purple-700">
-                Start as Freelancer →
+               Join as Freelancer →
               </button>
             </div>
 
@@ -241,22 +325,17 @@ function Home() {
             <div className="rounded-2xl border border-emerald-200 bg-white p-8 shadow-sm">
               <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-3xl">🏢</div>
               <h3 className="text-xl font-black text-slate-900">Business Owners</h3>
-              <p className="mt-2 text-sm text-slate-500 leading-relaxed">List your business in our directory. Freelancers will find you, check if you need digital support, and reach out with offers to help you grow online.</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-emerald-500">FOR BUSINESS OWNERS</p>
+              <p className="mt-2 text-sm text-slate-500 leading-relaxed">Register your business, receive connection requests from skilled freelancers, review their profiles, and collaborate to grow your business.</p>
               <ul className="mt-5 space-y-2">
-                {[
-                  "List your business in the directory",
-                  "Freelancers find you & reach out",
-                  "Get website & digital help offers",
-                  "See typical website costs",
-                  "Flag when you need help",
-                ].map((item) => (
+                {[ "Register your business","Receive connection requests","View freelancer profiles", "Accept or reject requests","Grow your business with professionals",].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-slate-700">
                     <span className="text-emerald-500">✓</span>{item}
                   </li>
                 ))}
               </ul>
               <button onClick={() => navigate("/register")} className="mt-6 w-full rounded-xl border border-emerald-200 bg-emerald-50 py-3 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100">
-                Register as Business Owner →
+                Join as Business Owner →
               </button>
             </div>
           </div>
@@ -265,8 +344,8 @@ function Home() {
 
       {/* ── CTA ── */}
       <section className="bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-20 text-center text-white">
-        <h2 className="text-4xl font-black">Ready to find your next client?</h2>
-        <p className="mx-auto mt-4 max-w-lg text-indigo-100">Join BizBridge AI and start discovering, pitching and closing local business leads today. Free to get started.</p>
+        <h2 className="text-4xl font-black">Start Discovering Business Opportunities Today</h2>
+        <p className="mx-auto mt-4 max-w-lg text-indigo-100">Start discovering local business opportunities with AI-powered analysis and proposal generation. Free to get started.</p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={() => navigate("/register")}

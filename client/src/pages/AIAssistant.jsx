@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 const taskOptions = [
   { value: "proposal",        label: "📋 Proposal",         desc: "Ready-to-send proposal" },
   { value: "email",           label: "✉️ Outreach Email",    desc: "Cold email draft" },
-  { value: "pitch",           label: "🎤 Sales Pitch",       desc: "Quick pitch script" },
   { value: "chat",            label: "💬 Business Advice",   desc: "AI consultation" },
   { value: "website_preview", label: "🌐 Website Preview",   desc: "Live dummy site mockup", full: true },
 ];
@@ -30,7 +30,7 @@ function AIAssistant() {
       setBusinessId(list[0]?._id || "");
     } catch (error) {
       console.log(error);
-      alert("Failed to load businesses");
+      toast.error("Failed to load businesses");
     }
   }, []);
 
@@ -47,7 +47,7 @@ function AIAssistant() {
       setWarning(response.data.warning || "");
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "AI generation failed");
+      toast.error(error.response?.data?.message || "AI generation failed");
     } finally {
       setLoading(false);
     }
@@ -83,11 +83,11 @@ function AIAssistant() {
             </select>
 
             <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-400">AI Task</label>
-            <div className="mb-5 grid grid-cols-2 gap-2">
+            <div className="mb-5 grid grid-cols-3 gap-3">
               {taskOptions.map((opt) => (
                 <button key={opt.value} type="button"
                   onClick={() => { setType(opt.value); setResult(""); }}
-                  className={`rounded-xl border px-3 py-3 text-left transition ${opt.full ? "col-span-2" : ""} ${
+                  className={`rounded-xl border px-3 py-2 text-left transition ${opt.full ? "col-span-3" : ""} ${
                     type === opt.value
                       ? "border-indigo-400 bg-indigo-50 shadow-sm"
                       : "border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50/50"
