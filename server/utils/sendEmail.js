@@ -1,26 +1,34 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("@getbrevo/brevo");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER,
-    pass: process.env.BREVO_API_KEY,
-  },
-});
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+apiInstance.setApiKey(
+  SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY
+);
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    await transporter.sendMail({
-      from: `"BizBridge AI" <${process.env.BREVO_USER}>`,
-      to,
+    await apiInstance.sendTransacEmail({
+      sender: {
+        name: "BizBridge AI",
+        email: process.env.BREVO_USER,
+      },
+      to: [
+        {
+          email: to,
+        },
+      ],
       subject,
-      html,
+      htmlContent: html,
     });
-    console.log(`Email sent to ${to}`);
+
+    console.log(`✅ Email sent successfully to ${to}`);
   } catch (error) {
-    console.error("Email send failed:", error.message);
+    console.error(
+      "❌ Brevo Email Error:",
+      error.response?.body || error.message
+    );
     throw error;
   }
 };
