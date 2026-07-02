@@ -1,33 +1,35 @@
-const SibApiV3Sdk = require("@getbrevo/brevo");
-
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-
-apiInstance.setApiKey(
-  SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY
-);
+const axios = require("axios");
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    await apiInstance.sendTransacEmail({
-      sender: {
-        name: "BizBridge AI",
-        email: process.env.BREVO_USER,
-      },
-      to: [
-        {
-          email: to,
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "BizBridge AI",
+          email: process.env.BREVO_USER,
         },
-      ],
-      subject,
-      htmlContent: html,
-    });
+        to: [
+          {
+            email: to,
+          },
+        ],
+        subject,
+        htmlContent: html,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    console.log(`✅ Email sent successfully to ${to}`);
+    console.log("✅ Email sent:", response.data);
   } catch (error) {
     console.error(
-      "❌ Brevo Email Error:",
-      error.response?.body || error.message
+      "❌ Email Error:",
+      error.response?.data || error.message
     );
     throw error;
   }
