@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    // Check required environment variables
+    // Check environment variables
     if (!process.env.BREVO_API_KEY) {
       throw new Error("BREVO_API_KEY is missing.");
     }
@@ -11,23 +11,32 @@ const sendEmail = async ({ to, subject, html }) => {
       throw new Error("BREVO_USER is missing.");
     }
 
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("📧 Sending Email...");
-    console.log("To:", to);
-    console.log("From:", process.env.BREVO_USER);
+    console.log("\n==========================================");
+    console.log("📧 BREVO EMAIL DEBUG");
+    console.log("==========================================");
+    console.log("To           :", to);
+    console.log("From         :", process.env.BREVO_USER);
+
     console.log(
-      "API Key:",
-      process.env.BREVO_API_KEY.substring(0, 12) + "..."
+      "API Key      :",
+      process.env.BREVO_API_KEY.substring(0, 20) + "..."
     );
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+    console.log(
+      "Key Length   :",
+      process.env.BREVO_API_KEY.length
+    );
+
+    console.log("==========================================\n");
 
     const response = await axios({
       method: "POST",
       url: "https://api.brevo.com/v3/smtp/email",
+      timeout: 30000,
       headers: {
         accept: "application/json",
-        "api-key": process.env.BREVO_API_KEY.trim(),
         "content-type": "application/json",
+        "api-key": process.env.BREVO_API_KEY.trim(),
       },
       data: {
         sender: {
@@ -39,28 +48,44 @@ const sendEmail = async ({ to, subject, html }) => {
             email: to,
           },
         ],
-        subject: subject,
+        subject,
         htmlContent: html,
       },
-      timeout: 30000,
     });
 
-    console.log("✅ Email sent successfully.");
+    console.log("==========================================");
+    console.log("✅ EMAIL SENT SUCCESSFULLY");
     console.log(response.data);
+    console.log("==========================================");
 
     return response.data;
+
   } catch (error) {
-    console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.error("❌ Brevo Email Error");
+
+    console.log("\n==========================================");
+    console.log("❌ BREVO EMAIL ERROR");
+    console.log("==========================================");
 
     if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
+      console.log("Status :", error.response.status);
+      console.log("Data   :", error.response.data);
     } else {
-      console.error(error.message);
+      console.log("Message:", error.message);
     }
 
-    console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log(
+      "API Key Used:",
+      process.env.BREVO_API_KEY
+        ? process.env.BREVO_API_KEY.substring(0, 20) + "..."
+        : "NOT FOUND"
+    );
+
+    console.log(
+      "BREVO_USER:",
+      process.env.BREVO_USER || "NOT FOUND"
+    );
+
+    console.log("==========================================\n");
 
     throw error;
   }
